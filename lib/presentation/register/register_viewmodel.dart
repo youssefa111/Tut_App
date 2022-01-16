@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:io';
 
-import 'package:analyzer/file_system/file_system.dart';
 import 'package:complete_advanced_flutter/app/functions.dart';
 import 'package:complete_advanced_flutter/data/mapper/mapper.dart';
 import 'package:complete_advanced_flutter/domain/usecase/register_usecase.dart';
@@ -24,6 +24,9 @@ class RegisterViewModel extends BaseViewModel
 
   StreamController _isAllInputsValidStreamController =
       StreamController<File>.broadcast();
+
+  StreamController isUserLoggedInSuccessfullyStreamController =
+      StreamController<bool>();
 
   RegisterUseCase _registerUseCase;
 
@@ -56,7 +59,7 @@ class RegisterViewModel extends BaseViewModel
             (data) => {
                   // right -> success (data)
                   inputState.add(ContentState()),
-
+                  isUserLoggedInSuccessfullyStreamController.add(true)
                   // navigate to main screen after the login
                 });
   }
@@ -69,6 +72,7 @@ class RegisterViewModel extends BaseViewModel
     _profilePictureStreamController.close();
     _emailStreamController.close();
     _isAllInputsValidStreamController.close();
+    isUserLoggedInSuccessfullyStreamController.close();
     super.dispose();
   }
 
@@ -123,7 +127,7 @@ class RegisterViewModel extends BaseViewModel
       .map((password) => _isPasswordValid(password));
 
   @override
-  Stream<File> get outputIsProfilePictureValid =>
+  Stream<File?> get outputIsProfilePictureValid =>
       _profilePictureStreamController.stream.map((file) => file);
 
   @override
@@ -171,6 +175,7 @@ class RegisterViewModel extends BaseViewModel
 
   @override
   setEmail(String email) {
+    inputEmail.add(email);
     if (isEmailValid(email)) {
       registerViewObject = registerViewObject.copyWith(email: email);
     } else {
@@ -181,6 +186,7 @@ class RegisterViewModel extends BaseViewModel
 
   @override
   setPassword(String password) {
+    inputPassword.add(password);
     if (_isPasswordValid(password)) {
       registerViewObject = registerViewObject.copyWith(password: password);
     } else {
@@ -191,6 +197,7 @@ class RegisterViewModel extends BaseViewModel
 
   @override
   setProfilePicture(File file) {
+    inputProfilePicture.add(file);
     if (file.path.isNotEmpty) {
       registerViewObject =
           registerViewObject.copyWith(profilePicture: file.path);
@@ -202,6 +209,7 @@ class RegisterViewModel extends BaseViewModel
 
   @override
   setUserName(String userName) {
+    inputUserName.add(userName);
     if (_isUserNameValid(userName)) {
       registerViewObject = registerViewObject.copyWith(userName: userName);
     } else {
@@ -212,6 +220,7 @@ class RegisterViewModel extends BaseViewModel
 
   @override
   setMobileNumber(String mobileNumber) {
+    inputMobileNumber.add(mobileNumber);
     if (_isMobileNumberValid(mobileNumber)) {
       registerViewObject =
           registerViewObject.copyWith(mobileNumber: mobileNumber);
@@ -253,7 +262,7 @@ abstract class RegisterViewModelOutput {
   Stream<bool> get outputIsPasswordValid;
   Stream<String?> get outputErrorPassword;
 
-  Stream<File> get outputIsProfilePictureValid;
+  Stream<File?> get outputIsProfilePictureValid;
 
   Stream<bool> get outputIsAllInputsValid;
 }
