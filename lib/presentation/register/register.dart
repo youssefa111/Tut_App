@@ -77,6 +77,7 @@ class _RegisterViewState extends State<RegisterView> {
         elevation: AppSize.s0,
         iconTheme: IconThemeData(color: ColorManager.primary),
         backgroundColor: ColorManager.white,
+        leading: BackButton(),
       ),
       body: StreamBuilder<FlowState>(
         stream: _viewModel.outputState,
@@ -270,16 +271,15 @@ class _RegisterViewState extends State<RegisterView> {
             child: StreamBuilder<File?>(
               stream: _viewModel.outputIsProfilePictureValid,
               builder: (context, snapshot) {
-                return _imagePickedByUser(
-                    snapshot.data); //_imagePickedByUser(snapshot.data);
+                return _imagePickedByUser(snapshot.data);
               },
             ),
-          ), // StreamBuilder, Flexible
+          ),
           Flexible(child: SvgPicture.asset(ImageAssets.photoCameraIc)),
         ],
-      ), // Row
+      ),
     );
-  } // Padding
+  }
 
   Widget _imagePickedByUser(File? image) {
     if (image != null && image.path.isNotEmpty) {

@@ -120,7 +120,7 @@ class RegisterViewModel extends BaseViewModel
           .map((mobileNumber) => _isMobileNumberValid(mobileNumber));
 
   @override
-  Stream<String?> get outputErrorPassword => outputIsMobileNumberValid
+  Stream<String?> get outputErrorPassword => outputIsPasswordValid
       .map((isPasswordValid) => isPasswordValid ? null : "Invalid Password");
   @override
   Stream<bool> get outputIsPasswordValid => _passwordStreamController.stream
@@ -145,7 +145,7 @@ class RegisterViewModel extends BaseViewModel
   }
 
   bool _isPasswordValid(String password) {
-    return password.length >= 10;
+    return password.length >= 8;
   }
 
   bool _validateAllInputs() {
